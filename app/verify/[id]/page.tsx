@@ -10,7 +10,7 @@ export default function Verify() {
   const params = useParams();
   const id = params.id;
   const [certificate, setCertificate] = useState<CertificateDocument | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,7 +39,7 @@ export default function Verify() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
           <p className="text-lg text-gray-700 dark:text-gray-300">
@@ -52,7 +52,7 @@ export default function Verify() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center">
           <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <XCircle className="w-12 h-12 text-red-600 dark:text-red-400" />
@@ -98,11 +98,11 @@ export default function Verify() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4">
       {/* Verification Badge */}
       <div className="max-w-5xl mx-auto mb-6">
         <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-xl p-4 flex items-center gap-4">
-          <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shrink-0">
             <CheckCircle className="w-7 h-7 text-white" />
           </div>
           <div className="flex-1">
@@ -110,8 +110,8 @@ export default function Verify() {
               ✓ Certificate Verified Successfully
             </h2>
             <p className="text-sm text-green-700 dark:text-green-300">
-              This certificate has been verified on the blockchain and is
-              authentic.
+              This Portfolio Certificate has been verified on the blockchain and
+              is authentic.
             </p>
           </div>
         </div>
@@ -124,27 +124,27 @@ export default function Verify() {
       <div className="max-w-5xl mx-auto mt-6">
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
           <div className="flex items-start gap-3">
-            <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+            <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
             <div>
               <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
                 About This Verification
               </h3>
               <p className="text-sm text-blue-700 dark:text-blue-300">
-                This page displays a verified proof of funds certificate. The
-                wallet address and holdings have been verified on the
-                blockchain. Note that the holder name is self-reported and not
-                verified. Always conduct your own due diligence.
+                This page displays a verified Portfolio Certificate. The wallet
+                address and holdings have been verified on the blockchain. Note
+                that the holder name is self-reported and not verified. Always
+                conduct your own due diligence.
               </p>
             </div>
           </div>
         </div>
-          <button
-        onClick={() => (window.location.href = "/")}
-        className="w-full px-6 mt-4 py-3 rounded-xl bg-gradient-primary text-white font-semibold hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-      >
-        Generate Your Own Certificate
-      </button>
-      </div> 
+        <button
+          onClick={() => (window.location.href = "/")}
+          className="w-full px-6 mt-4 py-3 rounded-xl bg-gradient-primary text-white font-semibold hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          Generate Your Own Certificate
+        </button>
+      </div>
     </div>
   );
 }

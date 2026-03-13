@@ -28,7 +28,7 @@ export function GenerateCertificateStep({
           Certificate Generated!
         </h2>
         <p className="text-muted-foreground text-base sm:text-lg mb-8 sm:mb-12">
-          Your proof of funds is ready. Download it as a PDF below.
+          Your Portfolio Certificate is ready. Download it as a PDF below.
         </p>
 
         {/* Certificate Preview */}

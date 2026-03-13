@@ -50,11 +50,11 @@ export default function App() {
   const { address, isConnected, chainType } = useMultiChain();
   const { data: portfolioData, isLoading: isPortfolioLoading } = usePortfolio(
     chainType,
-    address
+    address,
   );
 
   const gradientClass =
-    theme === "dark" ? "from-white to-gray-400" : "from-gray-800 to-gray-500";
+    theme === "dark" ? "from-white to-gray-400" : "bg-gray-800";
 
   const certificateProps = {
     walletAddress: certificateWalletAddress || address || "",
@@ -97,28 +97,75 @@ export default function App() {
     }
     setNameError("");
     setGenerating(true);
+    toast.loading("Generating your free Portfolio Certificate...", {
+      id: "cert-gen",
+    });
 
     try {
-      const response = await fetch("/api/checkout", {
+      const certResponse = await fetch("/api/certificates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           walletAddress: address,
-          name,
-          balances,
-          totalValue,
+          holderName: name,
+          totalValue: totalValue,
+          balances: balances,
+          issueDate: new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
+          verificationDate: new Date().toLocaleString("en-US"),
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to create session");
+      const certData = await certResponse.json();
 
-      const { url } = await response.json();
-      window.location.href = url;
+      if (certResponse.ok && certData.success) {
+        setCertId(certData.certificateId);
+        setCertificateHolderName(name);
+        setCertificateWalletAddress(address || "");
+
+        toast.success("Portfolio Certificate generated successfully!", {
+          id: "cert-gen",
+        });
+        setStep(3);
+        setPaymentStatus("success"); // Bypass payment status checks
+      } else {
+        throw new Error(
+          certData.error || "Failed to generate Portfolio Certificate",
+        );
+      }
     } catch (error) {
-      console.error("Payment error:", error);
-      toast.error("Failed to initiate payment");
+      console.error("Generation error:", error);
+      toast.error("Failed to generate Portfolio Certificate", {
+        id: "cert-gen",
+      });
+    } finally {
       setGenerating(false);
     }
+
+    // try {
+    //   const response = await fetch("/api/checkout", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({
+    //       walletAddress: address,
+    //       name,
+    //       balances,
+    //       totalValue,
+    //     }),
+    //   });
+
+    //   if (!response.ok) throw new Error("Failed to create session");
+
+    //   const { url } = await response.json();
+    //   window.location.href = url;
+    // } catch (error) {
+    //   console.error("Payment error:", error);
+    //   toast.error("Failed to initiate payment");
+    //   setGenerating(false);
+    // }
   };
 
   const handleExport = async () => {
@@ -137,9 +184,9 @@ export default function App() {
       );
       const blob = await pdf(doc).toBlob();
       const url = URL.createObjectURL(blob);
-      const filename = `walletScan_Certificate_${certificateProps.certificateId.replace(
+      const filename = `Portfolio_Certificate_${certificateProps.certificateId.replace(
         "CP-",
-        ""
+        "",
       )}.pdf`;
 
       // Check if user is in an in-app browser
@@ -206,7 +253,7 @@ export default function App() {
             const parsedBalances = metadata.balances;
             const parsedTotalValue = metadata.totalValue;
 
-            toast.loading("Generating certificate...", {
+            toast.loading("Generating statement...", {
               id: "payment-verify",
             });
 
@@ -238,14 +285,14 @@ export default function App() {
 
               // Small delay to ensure state updates before showing success
               await new Promise((resolve) => setTimeout(resolve, 300));
-              toast.success("Certificate generated successfully!", {
+              toast.success("Portfolio Certificate generated successfully!", {
                 id: "payment-verify",
               });
               setIsPaymentLoading(false);
               setStep(3);
             } else {
               console.error("Certificate generation error:", certData);
-              toast.error("Certificate generation failed", {
+              toast.error("Portfolio Certificate generation failed", {
                 id: "payment-verify",
               });
               setIsPaymentLoading(false);
@@ -280,16 +327,15 @@ export default function App() {
   // Auto-download PDF after state has fully updated
   useEffect(() => {
     if (!certId) return;
-    
+
     // Skip auto-download for in-app browsers
     if (isInAppBrowser()) {
-      toast.info(
-        `Certificate ready! Click "Download" below to get your PDF.`,
-        { duration: 4000 }
-      );
+      toast.info(`Portfolio Certificate ready! Please use external browser.`, {
+        duration: 4000,
+      });
       return;
     }
-    
+
     toast.info("Starting automatic download...", { duration: 2000 });
     handleExport();
   }, [certId]);
@@ -298,7 +344,7 @@ export default function App() {
     if (isConnected && address && step === 1) {
       setStep(2);
       toast.success(
-        `Wallet connected: ${address.slice(0, 6)}...${address.slice(-4)}`
+        `Wallet connected: ${address.slice(0, 6)}...${address.slice(-4)}`,
       );
     } else if (!isConnected && step !== 1) {
       setStep(1);
@@ -310,22 +356,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-theme text-theme transition-colors duration-300">
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-linear-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-pulse" />
-        <div
-          className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-linear-to-tl from-cyan-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "1s" }}
-        />
-      </div>
-
-      <div className="fixed inset-0 overflow-hidden pointer-events-none hidden">
-        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-linear-to-br from-blue-50/50 to-purple-50/50 rounded-full blur-3xl" />
-        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-linear-to-tl from-cyan-50/50 to-pink-50/50 rounded-full blur-3xl" />
-      </div>
-
       <Header />
 
-      <main className="relative max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 pb-28">
+      <main className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-24 sm:pt-40 pb-28">
         <ProgressBar step={step} />
 
         {step === 1 && <ConnectWalletStep gradientClass={gradientClass} />}

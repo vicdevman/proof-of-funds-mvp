@@ -21,8 +21,8 @@ export function ProgressBar({ step }: ProgressBarProps) {
                 step > num
                   ? "bg-green-500/20 border-green-500"
                   : step === num
-                  ? "bg-primary/20 border-primary shadow-lg shadow-primary"
-                  : "border-border"
+                    ? "bg-primary/20 border-primary shadow-lg shadow-primary"
+                    : "border-border"
               }`}
             >
               {step > num ? (

@@ -1,4 +1,12 @@
-import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  Font,
+} from "@react-pdf/renderer";
 import React from "react";
 import type { PDFCertificateProps } from "@/types";
 
@@ -6,285 +14,245 @@ import type { PDFCertificateProps } from "@/types";
 const formatAddress = (address: string) =>
   `${address.slice(0, 6)}...${address.slice(-4)}`;
 
-// Styles (mirroring your Tailwind design)
+// Standard colors
+const colors = {
+  bg: "#ffffff",
+  text: "#111827",
+  muted: "#6b7280",
+  accent: "#3b82f6",
+  success: "#10b981",
+  blue: "#3b82f6",
+  border: "#e5e7eb",
+  darkBg: "#0f0f0f",
+};
+
 const styles = StyleSheet.create({
   page: {
-    backgroundColor: "white",
-    padding: 40,
-    fontSize: 12,
-    color: "#333",
+    backgroundColor: colors.bg,
+    padding: 0,
     fontFamily: "Helvetica",
+  },
+  container: {
+    margin: 40,
+    padding: 30,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
-    paddingBottom: 15,
-    borderBottomWidth: 2,
-    borderBottomColor: "#e5e7eb",
+    marginBottom: 40,
   },
-  logoContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  logo: {
-    width: 40,
-    height: 40,
-    backgroundColor: "#4f46e5",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10,
-  },
-  logoText: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  companyName: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#111827",
-  },
-  companySubtitle: {
-    fontSize: 10,
-    color: "#6b7280",
-  },
-  certInfo: {
-    textAlign: "right",
-  },
-  certLabel: {
-    fontSize: 10,
-    color: "#6b7280",
-  },
-  certId: {
-    fontSize: 14,
-    fontFamily: "Courier",
-    fontWeight: "bold",
-  },
-  certDate: {
-    fontSize: 9,
-    color: "#9ca3af",
-    marginTop: 5,
-  },
-  titleSection: {
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: 12,
-    color: "#6b7280",
-  },
-  walletInfo: {
-    backgroundColor: "#eef2ff",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-  },
-  walletGrid: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  walletLabel: {
-    fontSize: 10,
-    color: "#6b7280",
-  },
-  walletValue: {
-    fontSize: 10,
-    fontFamily: "Courier",
-    fontWeight: "bold",
-  },
-  totalValue: {
-    backgroundColor: "#4f46e5",
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 15,
-    color: "white",
-    textAlign: "center",
-  },
-  totalLabel: {
-    fontSize: 10,
-    opacity: 0.9,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-  },
-  totalAmount: {
-    fontSize: 40,
-    fontWeight: "bold",
-  },
-  totalUnit: {
-    fontSize: 10,
-    opacity: 0.75,
-  },
-  assetSection: {
-    marginBottom: 20,
-  },
-  assetTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  assetBar: {
-    width: 2,
-    height: 20,
-    backgroundColor: "#4f46e5",
-    borderRadius: 2,
-    marginRight: 5,
-  },
-  assetItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: "#f9fafb",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    padding: 10,
-    marginBottom: 8,
-  },
-  assetLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  assetIcon: {
-    width: 30,
-    height: 30,
-    backgroundColor: "#4f46e5",
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10,
-  },
-  assetIconText: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  assetDetails: {
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  assetSub: {
-    fontSize: 10,
-    color: "#6b7280",
-  },
-  assetValue: {
-    textAlign: "right",
-  },
-  assetValueAmount: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  assetValueLabel: {
-    fontSize: 10,
-    color: "#6b7280",
-  },
-  verificationSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  verificationList: {
+  issuedBySection: {
     flex: 1,
   },
-  verificationTitle: {
+  label: {
+    fontSize: 9,
+    textTransform: "uppercase",
+    letterSpacing: 2,
+    color: colors.muted,
+    marginBottom: 4,
+  },
+  companyName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: colors.text,
+  },
+  dateSection: {
+    textAlign: "right",
+  },
+  dateValue: {
+    fontSize: 11,
+    color: colors.text,
+  },
+  titleSection: {
+    marginBottom: 35,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: colors.text,
+    letterSpacing: -0.5,
+  },
+  verificationSubtitle: {
+    fontSize: 10,
+    color: colors.muted,
+    marginTop: 6,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    borderBottomStyle: "dashed",
+    marginVertical: 25,
+  },
+  holderSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 25,
+  },
+  holderValue: {
     fontSize: 14,
     fontWeight: "bold",
-    marginBottom: 8,
+    color: colors.text,
+  },
+  unverifiedBadge: {
+    fontSize: 8,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+    borderWidth: 1,
+    borderColor: "#fcd34d",
+    color: "#b45309",
+    padding: "3 6",
+  },
+  walletSection: {
+    marginBottom: 25,
+  },
+  fullAddress: {
+    fontSize: 10,
+    color: colors.text,
+    fontFamily: "Courier",
+  },
+  tableHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
+  tableHeaderLabel: {
+    fontSize: 9,
+    textTransform: "uppercase",
+    letterSpacing: 2,
+    color: colors.muted,
+  },
+  assetRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+    alignItems: "flex-start",
+  },
+  assetInfo: {
+    flex: 1,
+  },
+  assetText: {
+    fontSize: 13,
+    fontWeight: "bold",
+    color: colors.text,
+  },
+  assetSubtext: {
+    fontSize: 10,
+    color: colors.muted,
+    marginTop: 2,
+  },
+  assetPrice: {
+    fontSize: 13,
+    fontWeight: "bold",
+    color: colors.text,
+    textAlign: "right",
+    fontFamily: "Helvetica-Bold",
+  },
+  totalSection: {
+    borderTopWidth: 1.5,
+    borderTopColor: colors.text,
+    paddingTop: 15,
+    marginBottom: 35,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "baseline",
+  },
+  totalValueLabel: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: colors.text,
+  },
+  totalSubtext: {
+    fontSize: 9,
+    color: colors.muted,
+    marginTop: 2,
+  },
+  totalValue: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: colors.text,
+  },
+  verificationBlock: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 35,
+  },
+  verificationsList: {
+    flex: 1,
+    marginRight: 20,
   },
   verificationItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5,
-    fontSize: 10,
-    color: "#4b5563",
-  },
-  check: {
-    color: "#16a34a",
-    marginRight: 5,
-  },
-  qrContainer: {
-    alignItems: "center",
-  },
-  qrBox: {
-    width: 100,
-    height: 100,
-    backgroundColor: "#e0e7ff",
-    borderRadius: 10,
-    borderWidth: 2,
-    padding: 5,
-    borderColor: "#d1d5db",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 5,
-  },
-  qrText: {
-    fontSize: 9,
-    color: "#6b7280",
-  },
-  footer: {
-    paddingTop: 15,
-    borderTopWidth: 2,
-    borderTopColor: "#e5e7eb",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    fontSize: 10,
-    color: "#6b7280",
-  },
-  footerLeft: {
-    fontWeight: "bold",
-  },
-  footerRight: {
-    textAlign: "right",
-    fontFamily: "Courier",
-    fontSize: 9,
-  },
-  disclaimer: {
-    marginTop: 15,
-    padding: 10,
-    backgroundColor: "#f3f4f6",
-    borderRadius: 8,
-    fontSize: 9,
-    color: "#6b7280",
-    lineHeight: 1.5,
-  },
-  holderSection: {
-    backgroundColor: "#eef2ff",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    textAlign: "center",
-    borderWidth: 2,
-    borderColor: "#c7d2fe",
-  },
-  holderLabel: {
-    fontSize: 9,
-    color: "#6b7280",
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    marginBottom: 5,
-  },
-  holderName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#111827",
     marginBottom: 8,
   },
-  holderDisclaimer: {
-    backgroundColor: "#fef3c7",
-    borderRadius: 6,
+  checkIcon: {
+    fontSize: 12,
+    color: colors.text,
+    marginRight: 6,
+  },
+  verificationText: {
+    fontSize: 10,
+    color: colors.text,
+  },
+  qrSection: {
+    alignItems: "center",
+  },
+  qrContainer: {
     padding: 6,
     borderWidth: 1,
-    borderColor: "#fcd34d",
+    borderColor: colors.border,
+    marginBottom: 6,
   },
-  holderDisclaimerText: {
+  qrLabel: {
+    fontSize: 9,
+    color: colors.muted,
+  },
+  metaSection: {
+    gap: 10,
+    marginBottom: 35,
+  },
+  metaRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  metaLabel: {
+    fontSize: 9,
+    textTransform: "uppercase",
+    letterSpacing: 1.5,
+    color: colors.muted,
+    width: 90,
+    textAlign: "right",
+    marginRight: 15,
+    paddingTop: 1,
+  },
+  metaValue: {
+    fontSize: 10,
+    color: colors.muted,
+    flex: 1,
+    fontFamily: "Courier",
+  },
+  barcodeSection: {
+    marginTop: "auto",
+    paddingTop: 20,
+    alignItems: "center",
+  },
+  disclaimer: {
+    fontSize: 9,
+    color: colors.muted,
+    lineHeight: 1.5,
+    textAlign: "center",
+    marginBottom: 10,
+    paddingHorizontal: 20,
+  },
+  idStub: {
     fontSize: 8,
-    color: "#92400e",
+    letterSpacing: 3,
+    color: colors.muted,
+    textTransform: "uppercase",
   },
 });
 
@@ -307,145 +275,137 @@ const PDFCertificate: React.FC<PDFCertificateProps> = ({
 }) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.logoContainer}>
-          <View style={styles.logo}>
-            <Text style={styles.logoText}>S</Text>
-          </View>
-          <View>
-            <Text style={styles.companyName}>{companyName}</Text>
-            <Text style={styles.companySubtitle}>
-              Verified Blockchain Assets
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.issuedBySection}>
+            <Text style={styles.label}>Issued by</Text>
+            <Text style={[styles.companyName, { color: colors.accent }]}>
+              {companyName}
             </Text>
           </View>
-        </View>
-        <View style={styles.certInfo}>
-          <Text style={styles.certLabel}>Certificate ID</Text>
-          <Text style={styles.certId}>{certificateId}</Text>
-          <Text style={styles.certDate}>{issueDate}</Text>
-        </View>
-      </View>
-
-      {/* Title */}
-      <View style={styles.titleSection}>
-        <Text style={styles.title}>PROOF OF FUNDS CERTIFICATE</Text>
-        <Text style={styles.subtitle}>
-          This document certifies the verified cryptocurrency holdings
-        </Text>
-      </View>
-
-      {/* Holder Name Section */}
-      {holderName && (
-        <View style={styles.holderSection}>
-          <Text style={styles.holderLabel}>Certificate Holder</Text>
-          <Text style={styles.holderName}>{holderName}</Text>
-          <View style={styles.holderDisclaimer}>
-            <Text style={styles.holderDisclaimerText}>
-              ⚠ Self-Reported Identity (Not Verified)
-            </Text>
+          <View style={styles.dateSection}>
+            <Text style={styles.label}>Date</Text>
+            <Text style={styles.dateValue}>{issueDate}</Text>
           </View>
         </View>
-      )}
 
-      {/* Wallet Info */}
-      <View style={styles.walletInfo}>
-        <View style={styles.walletGrid}>
-          <View>
-            <Text style={styles.walletLabel}>Wallet Address (Verified)</Text>
-            <Text style={styles.walletValue}>{walletAddress}</Text>
-          </View>
-          <View style={{ textAlign: "right" }}>
-            <Text style={styles.walletLabel}>Verification Date</Text>
-            <Text style={styles.walletValue}>{verificationDate}</Text>
-          </View>
+        {/* Title */}
+        <View style={styles.titleSection}>
+          <Text style={styles.label}>Document Type</Text>
+          <Text style={[styles.title, { color: colors.accent }]}>
+            Portfolio Certificate
+          </Text>
+          <Text style={styles.verificationSubtitle}>
+            Verified {verificationDate}
+          </Text>
         </View>
-      </View>
 
-      {/* Total Value */}
-      <View style={styles.totalValue}>
-        <Text style={styles.totalLabel}>Total Verified Value</Text>
-        <Text style={styles.totalAmount}>
-          ${totalValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-        </Text>
-        <Text style={styles.totalUnit}>United States Dollars</Text>
-      </View>
+        <View style={styles.divider} />
 
-      {/* Asset Breakdown */}
-      <View style={styles.assetSection}>
-        <View style={styles.assetTitle}>
-          <View style={styles.assetBar} />
-          <Text>Asset Breakdown - {balances.length}/{totalBalances || balances.length}</Text>
+        {/* Holder */}
+        {holderName && (
+          <View style={styles.holderSection}>
+            <View>
+              <Text style={styles.label}>Certificate Holder</Text>
+              <Text style={styles.holderValue}>{holderName}</Text>
+            </View>
+            <View style={styles.unverifiedBadge}>
+              <Text>Unverified</Text>
+            </View>
+          </View>
+        )}
+
+        {/* Wallet */}
+        <View style={styles.walletSection}>
+          <Text style={styles.label}>Wallet Address</Text>
+          <Text style={styles.fullAddress}>{walletAddress}</Text>
         </View>
-        {balances.map((balance, idx) => (
-          <View key={idx} style={styles.assetItem}>
-            <View style={styles.assetLeft}>
-              <View style={styles.assetIcon}>
-                <Text style={styles.assetIconText}>{balance.token[0]}</Text>
-              </View>
-              <View>
-                <Text style={styles.assetDetails}>
+
+        <View style={styles.divider} />
+
+        {/* Assets Table */}
+        <View style={styles.tableHeader}>
+          <Text style={styles.tableHeaderLabel}>Description</Text>
+          <Text style={styles.tableHeaderLabel}>Subtotal</Text>
+        </View>
+
+        <View>
+          {balances.map((balance, idx) => (
+            <View key={idx} style={styles.assetRow}>
+              <View style={styles.assetInfo}>
+                <Text style={styles.assetText}>
                   {balance.amount.toLocaleString()} {balance.token}
                 </Text>
-                <Text style={styles.assetSub}>
-                  {balance.chain} • {formatAddress(balance.address)}
+                <Text style={styles.assetSubtext}>
+                  {balance.chain} · {formatAddress(balance.address)}
                 </Text>
               </View>
-            </View>
-            <View style={styles.assetValue}>
-              <Text style={styles.assetValueAmount}>
+              <Text style={styles.assetPrice}>
                 ${balance.value.toLocaleString()}
               </Text>
-              <Text style={styles.assetValueLabel}>USD Value</Text>
-            </View>
-          </View>
-        ))}
-      </View>
-
-      {/* QR Code & Verification */}
-      <View style={styles.verificationSection}>
-        <View style={styles.verificationList}>
-          <Text style={styles.verificationTitle}>Verification</Text>
-          {verifications.map((verification, idx) => (
-            <View key={idx} style={styles.verificationItem}>
-              <Text style={styles.check}>✓</Text>
-              <Text>{verification}</Text>
             </View>
           ))}
         </View>
-        <View style={styles.qrContainer}>
-          <View style={styles.qrBox}>
-            {qrCodeDataUrl && (
-              <Image 
-                src={qrCodeDataUrl} 
-                style={{ width: 90, height: 90 }} 
-              />
-            )}
-          </View>
-          <Text style={styles.qrText}>Scan to verify</Text>
-        </View>
-      </View>
 
-      {/* Footer */}
-      <View style={styles.footer}>
-        <View>
-          <Text style={styles.footerLeft}>{companyName} Inc.</Text>
-          <Text>
-            {companyUrl} • {supportEmail}
+        {/* Total */}
+        <View style={styles.totalSection}>
+          <View>
+            <Text style={styles.totalValueLabel}>Total</Text>
+            <Text style={styles.totalSubtext}>
+              {balances.length}/{totalBalances || balances.length} assets · USD
+            </Text>
+          </View>
+          <Text style={styles.totalValue}>
+            ${totalValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
           </Text>
         </View>
-        <View style={styles.footerRight}>
-          <Text>Certificate Hash:</Text>
-          <Text>{certificateHash}</Text>
-        </View>
-      </View>
 
-      {/* Disclaimer */}
-      <View style={styles.disclaimer}>
-        <Text>
-          <Text style={{ fontWeight: "bold" }}>Legal Disclaimer:</Text>{" "}
-          {disclaimer}
-        </Text>
+        <View style={styles.divider} />
+
+        {/* Verification + QR */}
+        <View style={styles.verificationBlock}>
+          <View style={styles.verificationsList}>
+            <Text style={styles.label}>Verifications</Text>
+            <View style={{ marginTop: 10 }}>
+              {verifications.map((v, idx) => (
+                <View key={idx} style={styles.verificationItem}>
+                  <Text style={styles.checkIcon}>•</Text>
+                  <Text style={styles.verificationText}>{v}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+          <View style={styles.qrSection}>
+            <View style={styles.qrContainer}>
+              {qrCodeDataUrl && (
+                <Image src={qrCodeDataUrl} style={{ width: 72, height: 72 }} />
+              )}
+            </View>
+            <Text style={styles.qrLabel}>Scan to verify</Text>
+          </View>
+        </View>
+
+        {/* Meta */}
+        <View style={styles.metaSection}>
+          <View style={styles.metaRow}>
+            <Text style={styles.metaLabel}>Certificate ID</Text>
+            <Text style={styles.metaValue}>{certificateId}</Text>
+          </View>
+          <View style={styles.metaRow}>
+            <Text style={styles.metaLabel}>Hash</Text>
+            <Text style={styles.metaValue}>{certificateHash}</Text>
+          </View>
+        </View>
+
+        {/* Barcode / Disclaimer */}
+        <View style={styles.barcodeSection}>
+          <Text style={styles.disclaimer}>
+            <Text style={{ fontWeight: "bold" }}>Disclaimer: </Text>
+            {disclaimer}
+          </Text>
+          <Text style={styles.idStub}>{certificateId}</Text>
+        </View>
       </View>
     </Page>
   </Document>

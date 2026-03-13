@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Check, Copy, FileText } from "lucide-react";
+import { Check, Copy, FileText, User } from "lucide-react";
+import { NameInputModal } from "./NameInputModal";
 import { PortfolioBalance } from "@/types";
 import { toast } from "sonner";
 
@@ -29,57 +30,35 @@ export function ReviewBalancesStep({
   generatePDF,
 }: ReviewBalancesStepProps) {
   const [copied, setCopied] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   return (
     <div className="animate-in fade-in duration-500">
       <div className="text-center mb-8 sm:mb-12">
-        <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30 mb-4">
+        {/* <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30 mb-4">
           <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
           <span className="text-xs sm:text-sm text-green-500">
             Wallet Connected
           </span>
-        </div>
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-theme">
+        </div> */}
+        {/* <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-theme">
           Your Portfolio
         </h2>
         <p className="text-muted-foreground text-base sm:text-lg">
           Review your crypto holdings
-        </p>
-      </div>
-
-      {/* Name Input Section */}
-      <div className="max-w-3xl mx-auto mb-6 sm:mb-8">
-        <div className="p-4 sm:p-6 rounded-2xl bg-glass border border-glass backdrop-blur-xl">
-          <label className="block text-sm sm:text-base font-medium text-theme mb-2">
-            Enter Your Name (Self-Reported)
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g., John Doe"
-            className={`w-full p-3 sm:p-3 rounded-lg bg-glass border border-glass focus:border-primary focus:outline-none text-theme placeholder-muted-foreground ${nameError && "outline-red-500 outline-1"}`}
-          />
-          {nameError && (
-            <p className="text-red-500 text-xs sm:text-sm mt-2">{nameError}</p>
-          )}
-          <p className="text-xs text-muted-foreground mt-2">
-            Disclaimer: We verify wallet addresses only—not your identity. This
-            is for informational purposes only.
-          </p>
-        </div>
+        </p> */}
       </div>
 
       {/* Total Value Card */}
       <div className="max-w-3xl mx-auto mb-6 sm:mb-8">
-        <div className="relative p-6 sm:p-8 rounded-3xl bg-linear-to-r from-[#3b82f6]/20 to-[#8b5cf6]/20 border border-glass backdrop-blur-xl overflow-hidden">
+        <div className="relative p-6 sm:p-8 rounded-4xl bg-blue-600/20 border border-glass backdrop-blur-xl overflow-hidden">
           <div className="absolute inset-0 bg-gradient-primary/10 animate-pulse" />
           <div className="relative">
             <p className="text-xs sm:text-sm text-muted-foreground mb-2">
               Total Portfolio Value
             </p>
-            <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-linear-to-r from-[#3b82f6] to-[#8b5cf6] bg-clip-text text-transparent">
-              ${isPortfolioLoading ? '...' : totalValue.toLocaleString()}
+            <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-blue-600 bg-clip-text text-transparent">
+              ${isPortfolioLoading ? "..." : totalValue.toLocaleString()}
             </h3>
             <div className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-glass bg-glass hover-glass transition-all">
               <span className="font-mono text-xs sm:text-sm text-theme">
@@ -177,18 +156,19 @@ export function ReviewBalancesStep({
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3">
           <button
             onClick={() => {
-              window.scrollTo({ top: 0, behavior: "smooth" });
-              generatePDF();
+              if (!name.trim()) {
+                setIsModalOpen(true);
+              } else {
+                generatePDF();
+              }
             }}
             disabled={generating || isPortfolioLoading}
-            className="w-full py-3 sm:py-4 rounded-2xl bg-gradient-primary hover:opacity-90 font-semibold text-base sm:text-lg transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shadow-primary text-white"
+            className="w-full py-3 sm:py-4 rounded-2xl bg-blue-600 hover:opacity-90 font-semibold text-base sm:text-lg transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shadow-primary text-white"
           >
             {generating ? (
               <span className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span className="text-sm sm:text-base">
-                  Processing...
-                </span>
+                <span className="text-sm sm:text-base">Processing...</span>
               </span>
             ) : (
               <span className="flex sm:flex-row items-center justify-center gap-1 sm:gap-2">
@@ -197,13 +177,24 @@ export function ReviewBalancesStep({
                   <span>Generate Certificate</span>
                 </span>
                 <span className="text-xs sm:text-sm opacity-90 font-normal">
-                  • $9.99
+                  • Free
                 </span>
               </span>
             )}
           </button>
         </div>
       </div>
+      <NameInputModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        name={name}
+        setName={setName}
+        nameError={nameError}
+        onSubmit={() => {
+          setIsModalOpen(false);
+          generatePDF();
+        }}
+      />
     </div>
   );
 }

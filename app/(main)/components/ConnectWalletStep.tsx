@@ -1,6 +1,13 @@
 "use client";
 
-import { Wallet, BarChart3, FileCheck2, Shield, Sparkles, TrendingUp } from "lucide-react";
+import {
+  Wallet,
+  BarChart3,
+  FileCheck2,
+  Shield,
+  Sparkles,
+  TrendingUp,
+} from "lucide-react";
 import { useAppKit } from "@reown/appkit/react";
 
 interface ConnectWalletStepProps {
@@ -14,7 +21,7 @@ const features = [
     desc: "Securely link your crypto wallets to verify ownership.",
   },
   {
-    icon: <BarChart3 className="w-10 h-10 text-emerald-500 mb-4" />,
+    icon: <BarChart3 className="w-10 h-10 text-indigo-500 mb-4" />,
     title: "View Balances",
     desc: "Automatically pull your total holdings across chains.",
   },
@@ -32,19 +39,21 @@ export function ConnectWalletStep({ gradientClass }: ConnectWalletStepProps) {
     <div className="animate-in fade-in duration-500">
       <div className="text-center mb-8 sm:mb-12">
         <h2
-          className={`text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 bg-linear-to-r ${gradientClass} bg-clip-text text-transparent inline-block`}
+          className={`text-2xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-linear-to-r ${gradientClass} bg-clip-text text-transparent inline-block`}
         >
-          Connect Your Wallet
+          Your On-Chain Wealth, Certified.
         </h2>
-        <p className="text-muted-foreground text-base sm:text-lg">
-          Securely connect to view your holdings and generate proof of funds
+        <p className="text-muted-foreground text-base sm:text-lg max-w-lg mx-auto">
+          The gold standard for on-chain asset verification. Generate a
+          professional Portfolio Certificate in seconds. Clear, beautiful, and
+          ready to share.
         </p>
       </div>
 
       <div className="flex justify-center">
         <button
           onClick={() => open()}
-          className="px-8 py-4 rounded-full bg-linear-to-r from-indigo-500 to-purple-500 text-white font-semibold hover:scale-105 transition-all shadow-lg"
+          className="px-8 py-4 rounded-full bg-blue-600 text-white font-semibold hover:scale-105 transition-all shadow-lg"
         >
           Connect Wallet
         </button>
@@ -52,9 +61,9 @@ export function ConnectWalletStep({ gradientClass }: ConnectWalletStepProps) {
 
       {/* Security Notice */}
       <div className="my-8 max-w-2xl mx-auto p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
-        <div className="flex gap-3">
+        <div className="flex items-start gap-3">
           <Shield className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
-          <div className="text-sm">
+          <div className="text-left text-sm">
             <p className="font-semibold text-blue-400 mb-1">
               Your funds are safe
             </p>
@@ -105,13 +114,14 @@ export function ConnectWalletStep({ gradientClass }: ConnectWalletStepProps) {
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mx-auto mb-3">
             <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400" />
           </div>
-          <h4 className="font-semibold mb-1 text-theme text-sm sm:text-base">
-            Instant
+          <h4 className="text-sm sm:text-base font-bold text-theme mb-2">
+            Verified Value
           </h4>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            Generate in seconds
+            Proof of holdings at current market prices.
           </p>
         </div>
+
         <div className="text-center">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center mx-auto mb-3">
             <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400" />
